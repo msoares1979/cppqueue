@@ -7,12 +7,14 @@ Bosch (Ovar, Aveiro, PT)
 Usage Instructions
 ------------------
 
-    cmake
-    make
-    make test
+    cmake -B output
+    cmake --build output
+    make -C output test
 
 Build Dependencies
 ------------------
 
 - C++ compiler (gcc, clang)
 - cmake
+- Makefile
+- ninja (optional)
