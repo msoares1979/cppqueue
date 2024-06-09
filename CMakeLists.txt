@@ -19,4 +19,4 @@ add_test(NAME test_basic
     COMMAND env LD_LIBRARY_PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY} $<TARGET_FILE:test_basic>
 )
 
-add_custom_target(check COMMAND ctest --output-on-failure)
+add_custom_target(check COMMAND ctest --progress -V --output-on-failure)
