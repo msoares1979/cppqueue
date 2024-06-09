@@ -1,6 +1,17 @@
 cmake_minimum_required(VERSION 3.28)
 project(asyncqueue LANGUAGES CXX)
 
+# Set the C++ standard
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+endif()
+
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fsanitize=address -fsanitize=undefined")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -O0 -fsanitize=address -fsanitize=undefined")
+
 include_directories(src)
 
 # simple usage executable
@@ -14,9 +25,9 @@ include(CTest)
 enable_testing()
 include_directories(test)
 
-add_executable(test_basic test/basic.cc)
+add_executable(test_basic test/basic.cc src/queue.h)
 add_test(NAME test_basic
     COMMAND env LD_LIBRARY_PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY} $<TARGET_FILE:test_basic>
 )
 
-add_custom_target(check COMMAND ctest --progress -V --output-on-failure)
+add_custom_target(check COMMAND ctest --progress --output-on-failure)
