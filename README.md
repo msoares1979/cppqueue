@@ -32,3 +32,7 @@ reasoning more explicit.
 > 
 > Longer text explaining WHY it's been done this way.
 > Can include code snippets or usage examples to ilustrate it.
+
+This small project comes as a nice opportunity to test my recently adopted
+development setup for Neovim. Still need to figure out LSP support, improve
+usage of quickfix lists, nvim-completion and so on.
