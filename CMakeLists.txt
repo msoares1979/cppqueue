@@ -3,19 +3,9 @@ project(asyncqueue LANGUAGES CXX)
 
 include_directories(src)
 
-# main library implementing the required solution
-add_library(${PROJECT_NAME} SHARED)
-target_sources(${PROJECT_NAME}
-  PRIVATE
-    src/queue.cc
-  PUBLIC
-    src/queue.h
-)
-
 # simple usage executable
-add_executable(asqueuer)
-target_sources(asqueuer PRIVATE src/main.cc)
-target_link_libraries(asqueuer ${PROJECT_NAME})
+add_executable(${PROJECT_NAME})
+target_sources(${PROJECT_NAME} PRIVATE src/main.cc src/queue.h)
 
 # cmake's test tool helper
 include(CTest)
