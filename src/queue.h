@@ -1,8 +1,21 @@
 #ifndef _QUEUE_H
 #define _QUEUE_H 1
 
+#include <mutex>
+#include <condition_variable>
+
 /** A simple templated queue (LiFo) implementation with multi-thread support
  * and dynamic allocation
+ *
+ * Allocation occurs once during initialization so we avoid memory
+ * fragmentation. If the client requests a size too big, it's not really a
+ * problem since the OS should take care of it via pagination.
+ *
+ * Concurrency is implemented via a simple condition variable. It should be
+ * enough.
+ *
+ * Notice we don't care about handling stored resources. They are all
+ * considered primitive types, so no need for it.
  */
 template<class T>
 class Queue {
@@ -18,6 +31,8 @@ public:
 private:
   void advanceIndex(int &index);
 
+  std::mutex mMutex;
+  std::condition_variable mCondition;
   int mSize;
   int mHead, mLength;
   T* mItems;
@@ -63,23 +78,32 @@ void Queue<T>::advanceIndex(int &index)
 template<class T>
 void Queue<T>::Push(T element)
 {
+  std::lock_guard<std::mutex> guard(mMutex);
+
   mItems[(mHead + mLength) % mSize] = element;
   if (mLength == mSize)
     advanceIndex(mHead);
 
   if (mLength < mSize)
     mLength++;
+
+  // this gives a chance for any waiting thread to execute
+  mCondition.notify_one();
 }
 
 /** Pops last element inserted at the queue
 *
-* @todo not handling blocking at the moment
+* Using a condition_variable predicate to determine whether we can fetch a
+* value from the queue.
 *
 * @return the last @a element, blocks calling thread if empty
 */
 template<class T>
 T Queue<T>::Pop()
 {
+  std::unique_lock<std::mutex> lock(mMutex);
+  mCondition.wait(lock, [this] { return mLength > 0; });
+
   auto e = mItems[mHead];
   if (mLength > 0)
     mLength--;
