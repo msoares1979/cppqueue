@@ -15,7 +15,7 @@ Build Dependencies
 ------------------
 
 - C++ compiler (gcc, clang)
-- cmake, doxygen
+- cmake, doxygen, lcov, genhtml
 - Makefile, ninja (optional)
 
 General Remarks
