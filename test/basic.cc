@@ -71,6 +71,20 @@ SCENARIO( "basic queue manipulation", "[basic]" ) {
     }
   }
 
+  GIVEN( "a queue of integers with size 2" ) {
+    Queue<int> q(2);
+
+    WHEN( "when a sequence of 5 consecutive numbers are pushed into it" ) {
+      for(int i = 1; i <= 5; i++)
+        q.Push(i);
+
+      THEN( "the next poped numbers are 4 and 5" ) {
+        REQUIRE( q.Pop() == 4 );
+        REQUIRE( q.Pop() == 5 );
+      }
+    }
+  }
+
   // this is for testing multi datatype support
   GIVEN( "a queue of strings with limited size" ) {
     Queue<std::string> q(2);
