@@ -43,7 +43,7 @@ public:
     th.detach();
 
     // not guaranteed, by gives a chance for the lower thread to perform its duties before returning to caller
-    std::this_thread::yield();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 
 private:
