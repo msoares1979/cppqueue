@@ -9,6 +9,7 @@ Usage Instructions
     cmake -S . -B output
     cmake --build output
     make -C output test
+    make -C output doc
 
 Build Dependencies
 ------------------
