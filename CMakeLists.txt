@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.28)
 project(asyncqueue LANGUAGES CXX)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Set the C++ standard
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -29,6 +31,13 @@ add_executable(test_basic test/basic.cc src/queue.h)
 add_test(
   NAME test_basic
   COMMAND $<TARGET_FILE:test_basic> -s -o ${CMAKE_CURRENT_BINARY_DIR}/test_basic.txt
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+add_executable(test_threaded test/threaded.cc src/queue.h)
+add_test(
+  NAME test_threaded
+  COMMAND $<TARGET_FILE:test_threaded> -s -o ${CMAKE_CURRENT_BINARY_DIR}/test_threaded.txt
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
