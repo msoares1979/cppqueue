@@ -66,11 +66,10 @@ if (BUILD_DOXYGEN AND DOXYGEN_FOUND)
       @ONLY
     )
 
-    add_custom_target(doc ALL
+    add_custom_target(doc
         COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating API documentation with Doxygen"
-        VERBATIM
     )
 else ()
     message(STATUS "Doxygen not found")
