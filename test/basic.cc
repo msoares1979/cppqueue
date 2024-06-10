@@ -98,6 +98,15 @@ SCENARIO( "basic queue manipulation", "[basic]" ) {
         REQUIRE((elapsed.count() - awhile) < 10);
       }
     }
+
+    WHEN( "any element is available" ) {
+      const int any = 1;
+      q.Push(any);
+
+      THEN( "PopWithTimeout returns immediatelly" ) {
+        REQUIRE( q.PopWithTimeout(10) == any );
+      }
+    }
   }
 
   GIVEN( "a queue of size zero" ) {
