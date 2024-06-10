@@ -85,6 +85,19 @@ SCENARIO( "basic queue manipulation", "[basic]" ) {
     }
   }
 
+  GIVEN( "a queue of size zero" ) {
+    Queue<int> q(0);
+    REQUIRE( q.Size() == 0 );
+
+    WHEN( "an element is pushed" ) {
+      q.Push(1);
+
+      THEN( "the queue is not modified" ) {
+        REQUIRE( q.Count() == 0 );
+      }
+    }
+  }
+
   // this is for testing multi datatype support
   GIVEN( "a queue of strings with limited size" ) {
     Queue<std::string> q(2);

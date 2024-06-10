@@ -80,6 +80,8 @@ void Queue<T>::Push(T element)
 {
   std::lock_guard<std::mutex> guard(mMutex);
 
+  if (0 == mSize) return;
+
   mItems[(mHead + mLength) % mSize] = element;
   if (mLength == mSize)
     advanceIndex(mHead);
