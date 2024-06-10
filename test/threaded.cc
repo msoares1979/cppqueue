@@ -66,13 +66,20 @@ SCENARIO( "multi-threaded usage", "[threaded]" ) {
       auto poper  = [&](int v) -> int { return q.Pop(); };
       ThreadHandler writer(pusher);
       ThreadHandler reader(poper);
+      auto Push = [&](int val){ writer.execute(val); };
+      auto Pop = [&](){ reader.execute(); };
+
       REQUIRE( writer.state() == ThreadHandler::ThreadHandlerStates::StateInitialized );
       REQUIRE( reader.state() == ThreadHandler::ThreadHandlerStates::StateInitialized );
 
-      THEN( "they should follow the proposed script blocking when needed" ) {
-        auto Push = [&](int val){ writer.execute(val); };
-        auto Pop = [&](){ reader.execute(); };
+      THEN( "poping from an empty queue should block" ) {
+        Pop();
+        REQUIRE( reader.state() == ThreadHandler::ThreadHandlerStates::StateBlocked );
+        Push(1);
+        REQUIRE( reader.value() == 1);
+      }
 
+      THEN( "they should follow the proposed script blocking when needed" ) {
         Push(1);
         REQUIRE( writer.state() == ThreadHandler::ThreadHandlerStates::StateReady );
 
