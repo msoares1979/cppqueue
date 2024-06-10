@@ -8,10 +8,6 @@
 
 /** Custom exception for signaling timeout errors */
 class QueueTimeoutException: public std::exception {
-public:
-  virtual const char* what() const noexcept override {
-    return "timeout during operation";
-  }
 };
 
 /** A simple templated queue (LiFo) implementation with multi-thread support
