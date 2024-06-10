@@ -25,8 +25,8 @@ public:
   void Push(T element);
   T Pop();
   T PopWithTimeout(int milliseconds);
-  int Count();
-  int Size();
+  int Count() const;
+  int Size() const;
 
 private:
   void advanceIndex(int &index);
@@ -129,14 +129,14 @@ T Queue<T>::PopWithTimeout(int milliseconds)
 
 /** Gives the current number of queued items */
 template<class T>
-int Queue<T>::Count()
+int Queue<T>::Count() const
 {
   return mLength;
 }
 
 /** Limit capacity for the queued items */
 template<class T>
-int Queue<T>::Size()
+int Queue<T>::Size() const
 {
   return mSize;
 }
