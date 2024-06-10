@@ -1,12 +1,13 @@
 #ifndef _QUEUE_H
 #define _QUEUE_H 1
 
+#include <chrono>
 #include <exception>
 #include <mutex>
 #include <condition_variable>
 
 /** Custom exception for signaling timeout errors */
-class QueueTimeouException: public std::exception {
+class QueueTimeoutException: public std::exception {
 public:
   virtual const char* what() const noexcept override {
     return "timeout during operation";
@@ -126,16 +127,27 @@ T Queue<T>::Pop()
 
 /** Pops last element inserted at the queue
 *
-* @param milliseconds  timeout for blocking the calling thread if the queue is empty
+* Very similar to Pop(), but using wait_for instead.
 *
-* @todo handle timeout
+* @param milliseconds  timeout for blocking the calling thread if the queue is empty
 *
 * @return the last @a element or an invalid value if queue is empty
 */
 template<class T>
-T Queue<T>::PopWithTimeout(int milliseconds)
+T Queue<T>::PopWithTimeout(int ms)
 {
-  return Pop();
+  std::unique_lock<std::mutex> lock(mMutex);
+  auto condition_ok = mCondition.wait_for(lock, std::chrono::milliseconds(ms), [this] { return mLength > 0; });
+  if (!condition_ok)
+    throw QueueTimeoutException();
+
+  auto e = mItems[mHead];
+  if (mLength > 0)
+    mLength--;
+
+  advanceIndex(mHead);
+
+  return e;
 }
 
 /** Gives the current number of queued items */

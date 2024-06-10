@@ -90,7 +90,7 @@ SCENARIO( "basic queue manipulation", "[basic]" ) {
         int awhile = 100; // ms
 
         auto before = std::chrono::high_resolution_clock::now();
-        REQUIRE_THROWS_AS(q.PopWithTimeout(awhile), QueueTimeouException);
+        REQUIRE_THROWS_AS(q.PopWithTimeout(awhile), QueueTimeoutException);
         auto after = std::chrono::high_resolution_clock::now();
 
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(after - before);
