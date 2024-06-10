@@ -1,6 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
+#include <chrono>
 #include <string>
 
 #include <queue.h>
@@ -81,6 +82,20 @@ SCENARIO( "basic queue manipulation", "[basic]" ) {
       THEN( "the next poped numbers are 4 and 5" ) {
         REQUIRE( q.Pop() == 4 );
         REQUIRE( q.Pop() == 5 );
+      }
+    }
+
+    WHEN( "no numbers are pushed" ) {
+      THEN( "PopWithTimeout will thrown an exception after a while" ) {
+        int awhile = 100; // ms
+
+        auto before = std::chrono::high_resolution_clock::now();
+        REQUIRE_THROWS_AS(q.PopWithTimeout(awhile), QueueTimeouException);
+        auto after = std::chrono::high_resolution_clock::now();
+
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(after - before);
+        // consider a small delta since this is not a real-time hard requirement
+        REQUIRE((elapsed.count() - awhile) < 10);
       }
     }
   }

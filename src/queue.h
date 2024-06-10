@@ -1,8 +1,17 @@
 #ifndef _QUEUE_H
 #define _QUEUE_H 1
 
+#include <exception>
 #include <mutex>
 #include <condition_variable>
+
+/** Custom exception for signaling timeout errors */
+class QueueTimeouException: public std::exception {
+public:
+  virtual const char* what() const noexcept override {
+    return "timeout during operation";
+  }
+};
 
 /** A simple templated queue (LiFo) implementation with multi-thread support
  * and dynamic allocation
