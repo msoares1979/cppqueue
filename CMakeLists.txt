@@ -26,9 +26,20 @@ enable_testing()
 include_directories(test)
 
 add_executable(test_basic test/basic.cc src/queue.h)
-add_test(NAME test_basic
-    COMMAND env LD_LIBRARY_PATH=${CMAKE_LIBRARY_OUTPUT_DIRECTORY} $<TARGET_FILE:test_basic> -s -o ${CMAKE_CURRENT_BINARY_DIR}/test_basic.txt
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+add_test(
+  NAME test_basic
+  COMMAND $<TARGET_FILE:test_basic> -s -o ${CMAKE_CURRENT_BINARY_DIR}/test_basic.txt
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
-add_custom_target(check COMMAND ctest --progress --output-on-failure)
+get_property(
+  TEST_NAMES
+  DIRECTORY ${CMAKE_BINARY_DIR}
+  PROPERTY TESTS
+)
+
+add_custom_target(
+  check
+  COMMAND ctest --progress --output-on-failure
+  DEPENDS  ${TEST_NAMES}
+)

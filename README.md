@@ -6,7 +6,7 @@ C++ exercise
 Usage Instructions
 ------------------
 
-    cmake -B output
+    cmake -S . -B output
     cmake --build output
     make -C output test
 
