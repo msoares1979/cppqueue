@@ -19,7 +19,9 @@ class QueueTimeoutException: public std::exception {
  * problem since the OS should take care of it via pagination.
  *
  * Concurrency is implemented via a simple condition variable. It should be
- * enough.
+ * enough. Furthermore, even though `mLength` is not being guarded via
+ * `Queue::Count()`, it doesn't seem there's gonna be an issue reading it
+ * via multiple concurrent threads as I tried to check via a specific testcase.
  *
  * Notice we don't care about handling stored resources. They are all
  * considered primitive types, so no need for it.
