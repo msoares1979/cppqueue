@@ -117,7 +117,7 @@ T Queue<T>::Pop()
 *
 * Very similar to Pop(), but using wait_for instead.
 *
-* @param milliseconds  timeout for blocking the calling thread if the queue is empty
+* @param ms  timeout for blocking the calling thread if the queue is empty
 *
 * @return the last @a element or an invalid value if queue is empty
 */
