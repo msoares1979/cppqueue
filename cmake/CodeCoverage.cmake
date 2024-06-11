@@ -5,7 +5,7 @@ if (LCOV AND GENHTML)
   message(STATUS "Found lcov and genhtml")
   file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/coverage)
 
-  add_custom_target(coverage ALL
+  add_custom_target(coverage
       COMMAND ${LCOV} --directory ${CMAKE_BINARY_DIR} --zerocounters
       COMMAND env -C ${CMAKE_BINARY_DIR} ctest -j ${PROCESSOR_COUNT}
       COMMAND ${LCOV} --directory ${CMAKE_BINARY_DIR} --capture --output-file ${CMAKE_BINARY_DIR}/coverage/coverage.info
