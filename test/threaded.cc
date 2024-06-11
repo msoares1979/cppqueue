@@ -1,9 +1,12 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
+#include <atomic>
+#include <cassert>
 #include <functional>
 #include <mutex>
 #include <thread>
+#include <vector>
 
 #include <queue.h>
 
@@ -99,6 +102,36 @@ SCENARIO( "multi-threaded usage", "[threaded]" ) {
 
         Push(5);
         REQUIRE( reader.value() == 5 );
+      }
+
+      THEN( "Queue::Count() should be consistent during large number of concurrent Push/Pop operations" ) {
+        std::vector<std::thread> threads;
+        std::atomic<bool> done(false);
+
+        for (int i = 0; i < 10; i++) {
+          threads.emplace_back([&q, &done]() {
+            while (!done)
+              q.Push(1);
+          });
+        }
+
+        for (int i = 0; i < 10; i++) {
+          threads.emplace_back([&q, &done]() {
+            while (!done) {
+              auto c = q.Count();
+              // Catch2 abuses from process heap/stack, so I'm gonna need to assert() here
+              assert( c >= 0 && c <= q.Size() );
+            }
+          });
+        }
+
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        done = true;
+
+        for (auto& t: threads)
+          t.join();
+
+        SUCCEED( "queue count seems consistent" );
       }
     }
   }
