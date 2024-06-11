@@ -4,6 +4,7 @@
 #include <chrono>
 #include <exception>
 #include <mutex>
+#include <memory>
 #include <condition_variable>
 
 /** Custom exception for signaling timeout errors */
@@ -27,7 +28,8 @@ template<class T>
 class Queue {
 public:
   Queue(std::size_t size);
-  virtual ~Queue();
+  ~Queue() = default;
+
   void Push(T element);
   T Pop();
   T PopWithTimeout(int milliseconds);
@@ -41,29 +43,19 @@ private:
   std::condition_variable mCondition;
   std::size_t mSize;
   std::size_t mHead, mLength;
-  T* mItems;
+  std::unique_ptr<T[]> mItems;
 };
 
-/** ctor, not much fun here
+/** ctor
  *
- * although it's not a good idea mess with things that can fail inside the
- * constructor such as dynamic allocation, I want to avoid the penalty of
- * dealing with it during regular operations.
+ * Using an unique_ptr for items to avoid issues between allocation and initialization
  */
 template<class T>
 Queue<T>::Queue(std::size_t size) :
     mSize(size),
     mHead(0), mLength(0),
-    mItems(nullptr)
+    mItems(std::make_unique<T[]>(size))
 {
-  mItems = new T[size];
-}
-
-/** dtor */
-template<class T>
-Queue<T>::~Queue()
-{
-  delete[] mItems;
 }
 
 /** Boilerplate to advance the given index without trespassing queue size
