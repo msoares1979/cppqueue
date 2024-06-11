@@ -26,21 +26,21 @@ class QueueTimeoutException: public std::exception {
 template<class T>
 class Queue {
 public:
-  Queue(int size);
+  Queue(std::size_t size);
   virtual ~Queue();
   void Push(T element);
   T Pop();
   T PopWithTimeout(int milliseconds);
-  int Count() const;
-  int Size() const;
+  std::size_t Count() const;
+  std::size_t Size() const;
 
 private:
-  void advanceIndex(int &index);
+  void advanceIndex(std::size_t &index);
 
   std::mutex mMutex;
   std::condition_variable mCondition;
-  int mSize;
-  int mHead, mLength;
+  std::size_t mSize;
+  std::size_t mHead, mLength;
   T* mItems;
 };
 
@@ -51,7 +51,7 @@ private:
  * dealing with it during regular operations.
  */
 template<class T>
-Queue<T>::Queue(int size) :
+Queue<T>::Queue(std::size_t size) :
     mSize(size),
     mHead(0), mLength(0),
     mItems(nullptr)
@@ -71,7 +71,7 @@ Queue<T>::~Queue()
  * @param index  reference to index to be increased
  */
 template<class T>
-void Queue<T>::advanceIndex(int &index)
+void Queue<T>::advanceIndex(std::size_t &index)
 {
   index = (index + 1) % mSize;
 }
@@ -148,14 +148,14 @@ T Queue<T>::PopWithTimeout(int ms)
 
 /** Gives the current number of queued items */
 template<class T>
-int Queue<T>::Count() const
+std::size_t Queue<T>::Count() const
 {
   return mLength;
 }
 
 /** Limit capacity for the queued items */
 template<class T>
-int Queue<T>::Size() const
+std::size_t Queue<T>::Size() const
 {
   return mSize;
 }
